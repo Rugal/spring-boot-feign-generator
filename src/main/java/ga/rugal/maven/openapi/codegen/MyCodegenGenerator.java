@@ -1,9 +1,16 @@
 package ga.rugal.maven.openapi.codegen;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
-import org.openapitools.codegen.*;
+import com.github.javafaker.Faker;
+import org.openapitools.codegen.CodegenOperation;
+import org.openapitools.codegen.CodegenType;
+import org.openapitools.codegen.SupportingFile;
 import org.openapitools.codegen.languages.AbstractJavaCodegen;
 
 public class MyCodegenGenerator extends AbstractJavaCodegen {
@@ -11,73 +18,13 @@ public class MyCodegenGenerator extends AbstractJavaCodegen {
   protected String apiVersion = "1.0.0";
 
   /**
-   * Configures the type of generator.
-   *
-   * @return the CodegenType for this generator
-   *
-   * @see org.openapitools.codegen.CodegenType
+   * Constructor for setting up codegen files.
    */
-  @Override
-  public CodegenType getTag() {
-    return CodegenType.CLIENT;
-  }
-
-  /**
-   * Configures a friendly name for the generator. This will be used by the generator to select the
-   * library with the -g flag.
-   *
-   * @return the friendly name for the generator
-   */
-  @Override
-  public String getName() {
-    return "spring-boot-feign";
-  }
-
-  /**
-   * Provides an opportunity to inspect and modify operation data before the code is generated.
-   *
-   * @param objs
-   * @param allModels
-   *
-   * @return
-   */
-  @Override
-  public Map<String, Object> postProcessOperationsWithModels(final Map<String, Object> objs,
-                                                             final List<Object> allModels) {
-
-    // to try debugging your code generator:
-    // set a break point on the next line.
-    // then debug the JUnit test called LaunchGeneratorInDebugger
-    final Map<String, Object> results = super.postProcessOperationsWithModels(objs, allModels);
-
-    final Map<String, Object> ops = (Map<String, Object>) results.get("operations");
-    final ArrayList<CodegenOperation> opList = (ArrayList<CodegenOperation>) ops.get("operation");
-
-    // iterate over the operation and perhaps modify something
-    for (final CodegenOperation co : opList) {
-      // example:
-      // co.httpMethod = co.httpMethod.toLowerCase();
-    }
-
-    return results;
-  }
-
-  /**
-   * Returns human-friendly help for the generator. Provide the consumer with help tips, parameters
-   * here
-   *
-   * @return A string value for the help message
-   */
-  @Override
-  public String getHelp() {
-    return "Generates a my-codegen client library.";
-  }
-
   public MyCodegenGenerator() {
     super();
 
     // set the output folder here
-    this.outputFolder = "generated-code/spring-boot-feign";
+    this.outputFolder = "generated-sources/spring-boot-feign";
 
     /**
      * Models. You can write model files using the modelTemplateFiles map. if you want to create one
@@ -115,17 +62,13 @@ public class MyCodegenGenerator extends AbstractJavaCodegen {
     /**
      * Reserved words. Override this with reserved words specific to your language
      */
-    this.reservedWords = new HashSet<>(
-      Arrays.asList(
-        "sample1", // replace with static values
-        "sample2")
-    );
+    this.reservedWords = new HashSet<>();
 
     /**
      * Additional Properties. These values can be passed to the templates and are available in
      * models, apis, and supporting files
      */
-    this.additionalProperties.put("apiVersion", apiVersion);
+    this.additionalProperties.put("apiVersion", this.apiVersion);
 
     /**
      * Supporting Files. You can write single files for the generator with the entire object tree
@@ -133,18 +76,79 @@ public class MyCodegenGenerator extends AbstractJavaCodegen {
      * engine. Otherwise, it will be copied
      */
     this.supportingFiles.add(new SupportingFile("myFile.mustache", // the input template or file
-                                                "", // the destination folder, relative `outputFolder`
-                                                "myFile.java") // the output file
+                                                this.sourceFolder,
+                                                // the destination folder, relative `outputFolder`
+                                                "FeignConfiguration.java") // the output file
     );
 
     /**
      * Language Specific Primitives. These types will not trigger imports by the client generator
      */
-    this.languageSpecificPrimitives = new HashSet<>(
-      Arrays.asList(
-        "Type1", // replace these with your types
-        "Type2")
-    );
+    this.languageSpecificPrimitives = new HashSet<>();
+  }
+
+  /**
+   * Configures the type of generator.
+   *
+   * @return the CodegenType for this generator
+   *
+   * @see org.openapitools.codegen.CodegenType
+   */
+  @Override
+  public CodegenType getTag() {
+    return CodegenType.CLIENT;
+  }
+
+  /**
+   * Configures a friendly name for the generator. This will be used by the generator to select the
+   * library with the -g flag.
+   *
+   * @return the friendly name for the generator
+   */
+  @Override
+  public String getName() {
+    return "spring-boot-feign";
+  }
+
+  /**
+   * Provides an opportunity to inspect and modify operation data before the code is generated.
+   *
+   * @param objs      objects of Openapi specification
+   * @param allModels model definition
+   *
+   * @return object to be rendered in mustache template
+   */
+  @Override
+  public Map<String, Object> postProcessOperationsWithModels(final Map<String, Object> objs,
+                                                             final List<Object> allModels) {
+
+    // to try debugging your code generator:
+    // set a break point on the next line.
+    // then debug the JUnit test called LaunchGeneratorInDebugger
+    final Map<String, Object> results = super.postProcessOperationsWithModels(objs, allModels);
+
+    final Map<String, Object> ops = (Map<String, Object>) results.get("operations");
+    final ArrayList<CodegenOperation> opList = (ArrayList<CodegenOperation>) ops.get("operation");
+
+    // iterate over the operation and perhaps modify something
+    for (final CodegenOperation co : opList) {
+      co.httpMethod = co.httpMethod.toUpperCase(Locale.US);
+    }
+
+    results.put("feignName", Faker.instance().name().username());
+    results.put("feignUrl", this.openAPI.getServers().get(0).getUrl());
+    return results;
+  }
+
+  /**
+   * Returns human-friendly help for the generator. Provide the consumer with help tips, parameters
+   * here
+   *
+   * @return A string value for the help message
+   */
+  @Override
+  public String getHelp() {
+    return "Generates a spring boot feign client library.";
   }
 
   /**
@@ -187,8 +191,8 @@ public class MyCodegenGenerator extends AbstractJavaCodegen {
   }
 
   /**
-   * override with any special text escaping logic to handle unsafe characters so as to avoid code
-   * injection
+   * Override with any special text escaping logic to handle unsafe characters so as to avoid code
+   * injection.
    *
    * @param input String to be cleaned up
    *
@@ -201,7 +205,7 @@ public class MyCodegenGenerator extends AbstractJavaCodegen {
   }
 
   /**
-   * Escape single and/or double quote to avoid code injection
+   * Escape single and/or double quote to avoid code injection.
    *
    * @param input String to be cleaned up
    *
