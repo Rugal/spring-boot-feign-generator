@@ -76,7 +76,7 @@ public class MyCodegenGenerator extends AbstractJavaCodegen {
      * engine. Otherwise, it will be copied
      */
     this.supportingFiles.add(new SupportingFile("myFile.mustache", // the input template or file
-                                                this.sourceFolder,
+                                                String.format("%s/%s", this.sourceFolder, "config"),
                                                 // the destination folder, relative `outputFolder`
                                                 "FeignConfiguration.java") // the output file
     );
