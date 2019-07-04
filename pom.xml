@@ -5,7 +5,7 @@
   <parent>
     <groupId>ga.rugal</groupId>
     <artifactId>parent</artifactId>
-    <version>1.2.1-SNAPSHOT</version>
+    <version>1.3.0</version>
   </parent>
 
   <artifactId>feign-client-generator</artifactId>
@@ -14,16 +14,15 @@
   <description>Openapi client generator for Openfeign</description>
   
   <properties>
-    <openapi-generator-version>4.0.2</openapi-generator-version>
-    <skip.surefire.tests>false</skip.surefire.tests>
+    <openapi.generator.version>4.0.2</openapi.generator.version>
+    <skip.surefire.tests>true</skip.surefire.tests>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.openapitools</groupId>
       <artifactId>openapi-generator</artifactId>
-      <version>${openapi-generator-version}</version>
-      <scope>provided</scope>
+      <version>${openapi.generator.version}</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
