@@ -22,8 +22,8 @@ jobs:
       - store_artifacts:
           path: target/site
       - run: curl -s https://codecov.io/bash | bash
-      - run: mvn clean package
       - save_cache:
           key: v1-generator-{{ checksum "pom.xml" }}
           paths:
             - ~/.m2
+
