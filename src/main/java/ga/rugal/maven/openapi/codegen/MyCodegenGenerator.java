@@ -155,7 +155,7 @@ public class MyCodegenGenerator extends AbstractJavaCodegen {
    * Escapes a reserved word as defined in the `reservedWords` array.Handle escaping those terms
    * here. This logic is only called if a variable matches the reserved words
    *
-   * @param name
+   * @param name reserved word
    *
    * @return the escaped term
    */
@@ -168,7 +168,7 @@ public class MyCodegenGenerator extends AbstractJavaCodegen {
    * Location to write model files.You can use the modelPackage() as defined when the class is
    * instantiated
    *
-   * @return
+   * @return path of model
    */
   @Override
   public String modelFileFolder() {
@@ -181,7 +181,7 @@ public class MyCodegenGenerator extends AbstractJavaCodegen {
    * Location to write api files.You can use the apiPackage() as defined when the class is
    * instantiated
    *
-   * @return
+   * @return path of api
    */
   @Override
   public String apiFileFolder() {
