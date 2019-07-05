@@ -8,7 +8,7 @@
   </parent>
 
   <artifactId>feign-client-generator</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0</version>
   <name>Openapi client generator for Spring Boot OpenFeign</name>
   <description>To generate the @FeignClient interface automatically using Openapi codegen plugin</description>
   
@@ -16,7 +16,7 @@
     <connection>scm:git:ssh://git@github.com/Rugal/spring-boot-feign-generator.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/Rugal/spring-boot-feign-generator.git</developerConnection>
     <url>https://github.com/Rugal/spring-boot-feign-generator</url>
-    <tag>HEAD</tag>
+    <tag>v1.0.0</tag>
   </scm>
   
   <ciManagement>
